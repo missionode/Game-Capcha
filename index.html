@@ -303,9 +303,13 @@ function setRandomPositions() {
     resetGame();
 
   window.onload = () => {
-   setRandomPositions();
-   startTimer();
-  };
+  setRandomPositions();
+  startTimer();
+};
+
+window.onresize = () => {
+  setRandomPositions();
+};
   </script>
 </body>
 </html>
