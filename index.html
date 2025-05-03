@@ -234,8 +234,39 @@ button:hover {
       pen.style.top = y + 'px';
     }
 
+    function setRandomPositions() {
+  const boardSize = 400;
+  const holeSize = 50;
+  const penSize = 40;
+  const minDistance = 100;
+
+  let holeX, holeY, penX, penY, distance;
+
+  do {
+    holeX = Math.random() * (boardSize - holeSize);
+    holeY = Math.random() * (boardSize - holeSize);
+
+    penX = Math.random() * (boardSize - penSize);
+    penY = Math.random() * (boardSize - penSize);
+
+    const dx = (holeX + holeSize / 2) - (penX + penSize / 2);
+    const dy = (holeY + holeSize / 2) - (penY + penSize / 2);
+    distance = Math.sqrt(dx * dx + dy * dy);
+  } while (distance < minDistance);
+
+  hole.style.left = holeX + "px";
+  hole.style.top = holeY + "px";
+  pen.style.left = penX + "px";
+  pen.style.top = penY + "px";
+    }
+
     // Init
     resetGame();
+
+  window.onload = () => {
+   setRandomPositions();
+   startTimer();
+  };
   </script>
 </body>
 </html>
