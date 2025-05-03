@@ -4,79 +4,105 @@
   <meta charset="UTF-8">
   <title>Pen in Hole CAPTCHA</title>
   <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background: #f1f1f1;
-    }
+    
+      body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(to bottom right, #e0f7fa, #e1bee7);
+}
 
-    #game-board {
-      width: 400px;
-      height: 400px;
-      background: #fff;
-      border: 2px solid #333;
-      border-radius: 8px;
-      position: relative;
-      overflow: hidden;
-      touch-action: none;
-    }
+#game-board {
+  width: 400px;
+  height: 400px;
+  background: #ffffffdd;
+  border: 2px solid #444;
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
 
-    #pen {
-      width: 40px;
-      height: 40px;
-      background: black;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      cursor: grab;
-    }
+#pen {
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, #212121 30%, #424242 100%);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  transition: background 0.3s ease;
+  z-index: 2;
+}
 
-    #hole {
-      width: 50px;
-      height: 50px;
-      background: radial-gradient(circle, #222 40%, #000 100%);
-      border-radius: 50%;
-      position: absolute;
-    }
+#hole {
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle at center, #000 40%, #333 100%);
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  animation: pulseHole 2s infinite ease-in-out;
+  z-index: 1;
+}
 
-    #controls {
-      margin-top: 20px;
-    }
+@keyframes pulseHole {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
+  }
+}
 
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border: none;
-      background: #333;
-      color: white;
-      border-radius: 5px;
-    }
-
-    #timer {
-      margin-top: 10px;
-      font-weight: bold;
-      color: #d00;
-    }
-
-    @keyframes auraPulse {
+@keyframes auraPulse {
   0% {
     box-shadow: 0 0 0 0 rgba(0, 255, 128, 0.7);
   }
   100% {
-    box-shadow: 0 0 0 20px rgba(0, 255, 128, 0);
+    box-shadow: 0 0 0 25px rgba(0, 255, 128, 0);
   }
 }
 
 .aura {
   animation: auraPulse 1s ease-out infinite;
+}
+
+#controls {
+  margin-top: 20px;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #4a148c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #6a1b9a;
+  transform: translateY(-2px);
+}
+
+#timer {
+  margin-top: 12px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #d32f2f;
 }
   </style>
 </head>
