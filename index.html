@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pen in Hole CAPTCHA</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f1f1f1;
+    }
+
+    #game-board {
+      width: 400px;
+      height: 400px;
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    #pen {
+      width: 40px;
+      height: 40px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+    }
+
+    #hole {
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, #222 40%, #000 100%);
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    #controls {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background: #333;
+      color: white;
+      border-radius: 5px;
+    }
+
+    #timer {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #d00;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-board">
+    <div id="pen"></div>
+    <div id="hole"></div>
+  </div>
+  <div id="controls">
+    <button onclick="resetGame()">Reset</button>
+    <div id="timer">Time left: 10s</div>
+  </div>
+
+  <script>
+    const board = document.getElementById('game-board');
+    const pen = document.getElementById('pen');
+    const hole = document.getElementById('hole');
+    const timerEl = document.getElementById('timer');
+
+    let isDragging = false;
+    let offsetX, offsetY;
+    let timer;
+    let timeLeft = 10;
+
+    function randomizeHole() {
+      const maxX = board.clientWidth - 50;
+      const maxY = board.clientHeight - 50;
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      hole.style.left = x + 'px';
+      hole.style.top = y + 'px';
+    }
+
+    function startTimer() {
+      timeLeft = 10;
+      timerEl.textContent = `Time left: ${timeLeft}s`;
+      timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          alert("Time's up! Try again.");
+          resetGame();
+        }
+      }, 1000);
+    }
+
+    function checkIfInsideHole() {
+      const penRect = pen.getBoundingClientRect();
+      const holeRect = hole.getBoundingClientRect();
+      const overlap = !(
+        penRect.right < holeRect.left ||
+        penRect.left > holeRect.right ||
+        penRect.bottom < holeRect.top ||
+        penRect.top > holeRect.bottom
+      );
+
+      if (overlap) {
+        clearInterval(timer);
+        alert("CAPTCHA Passed: Verified as Human!");
+        pen.style.background = 'green';
+      }
+    }
+
+    function resetGame() {
+      pen.style.left = '50%';
+      pen.style.top = '50%';
+      pen.style.background = 'black';
+      randomizeHole();
+      clearInterval(timer);
+      startTimer();
+    }
+
+    // Drag with mouse
+    pen.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      const rect = pen.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        checkIfInsideHole();
+      }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      movePen(e.clientX, e.clientY);
+    });
+
+    // Drag with touch
+    pen.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      const rect = pen.getBoundingClientRect();
+      offsetX = e.touches[0].clientX - rect.left;
+      offsetY = e.touches[0].clientY - rect.top;
+    });
+
+    document.addEventListener('touchend', () => {
+      if (isDragging) {
+        isDragging = false;
+        checkIfInsideHole();
+      }
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      movePen(e.touches[0].clientX, e.touches[0].clientY);
+    });
+
+    function movePen(clientX, clientY) {
+      const boardRect = board.getBoundingClientRect();
+      let x = clientX - boardRect.left - offsetX;
+      let y = clientY - boardRect.top - offsetY;
+
+      x = Math.max(0, Math.min(x, board.clientWidth - pen.offsetWidth));
+      y = Math.max(0, Math.min(y, board.clientHeight - pen.offsetHeight));
+
+      pen.style.left = x + 'px';
+      pen.style.top = y + 'px';
+    }
+
+    // Init
+    resetGame();
+  </script>
+</body>
+</html>
