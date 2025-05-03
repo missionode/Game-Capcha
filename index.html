@@ -65,6 +65,19 @@
       font-weight: bold;
       color: #d00;
     }
+
+    @keyframes auraPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 255, 128, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 20px rgba(0, 255, 128, 0);
+  }
+}
+
+.aura {
+  animation: auraPulse 1s ease-out infinite;
+}
   </style>
 </head>
 <body>
@@ -77,6 +90,10 @@
     <div id="timer">Time left: 10s</div>
   </div>
 
+  
+ <audio id="success-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-confirmation-tone-2867.mp3"></audio>
+
+  
   <script>
     const board = document.getElementById('game-board');
     const pen = document.getElementById('pen');
@@ -112,21 +129,23 @@
     }
 
     function checkIfInsideHole() {
-      const penRect = pen.getBoundingClientRect();
-      const holeRect = hole.getBoundingClientRect();
-      const overlap = !(
-        penRect.right < holeRect.left ||
-        penRect.left > holeRect.right ||
-        penRect.bottom < holeRect.top ||
-        penRect.top > holeRect.bottom
-      );
+  const penRect = pen.getBoundingClientRect();
+  const holeRect = hole.getBoundingClientRect();
+  const overlap = !(
+    penRect.right < holeRect.left ||
+    penRect.left > holeRect.right ||
+    penRect.bottom < holeRect.top ||
+    penRect.top > holeRect.bottom
+  );
 
-      if (overlap) {
-        clearInterval(timer);
-        alert("CAPTCHA Passed: Verified as Human!");
-        pen.style.background = 'green';
-      }
-    }
+  if (overlap) {
+    clearInterval(timer);
+    document.getElementById('success-sound').play();
+    alert("CAPTCHA Passed: Verified as Human!");
+    pen.style.background = 'green';
+    pen.classList.add('aura');
+  }
+}
 
     function resetGame() {
       pen.style.left = '50%';
